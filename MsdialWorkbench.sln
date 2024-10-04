@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassSpectrogramMsfinder", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoisotopicIonCalculatorApp", "src\MSDIAL4\MonoisotopicIonCalculatorApp\MonoisotopicIonCalculatorApp.csproj", "{3951C285-7E2A-45B6-91C8-B5854F0F65D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSFINDER", "src\MSFINDER\MsFinder\MSFINDER.csproj", "{37F1BB27-1361-46AE-AE71-14A51055E35B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSFINDER", "src\MSFINDER\MSFINDER\MSFINDER.csproj", "{37F1BB27-1361-46AE-AE71-14A51055E35B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PairwisePlotCommon", "src\MSDIAL4\PairwisePlotCommon\PairwisePlotCommon.csproj", "{1DDACBB2-AC43-40BD-B094-091458158523}"
 EndProject

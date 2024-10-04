@@ -114,6 +114,7 @@ public sealed class AlignmentCSVExporter
 
     private string WrapField(string field) {
         if (field.Contains(Separator)) {
+            field = field.Trim('"');
             return $"\"{field}\"";
         }
         return field;
