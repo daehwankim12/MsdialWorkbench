@@ -127,6 +127,6 @@
     <value>https://api.github.com/repos/systemsomicslab/MsdialWorkbench/releases?per_page=100</value>
   </data>
   <data name="VERSION" xml:space="preserve">
-    <value>5.3.241004.LMS2</value>
+    <value>5.4.241021.LMS2</value>
   </data>
 </root>

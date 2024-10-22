@@ -33,13 +33,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="581efeb9-a649-423e-b3ea-babfdaa1b2e5" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/MsdialWorkbench.sln" beforeDir="false" afterPath="$PROJECT_DIR$/MsdialWorkbench.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Common/CommonStandard/CommonStandard.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Common/CommonStandard/CommonStandard.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MSDIAL4/DatabaseStandard/DatabaseStandard.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL4/DatabaseStandard/DatabaseStandard.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MSDIAL4/MathematicsStandard/MathematicsStandard.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL4/MathematicsStandard/MathematicsStandard.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MSDIAL4/MolViewer/MolViewer.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL4/MolViewer/MolViewer.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MSDIAL4/StructureFinderStandard/StructureFinderStandard.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL4/StructureFinderStandard/StructureFinderStandard.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MSDIAL5/MsdialCore/Export/AlignmentCSVExporter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL5/MsdialCore/Export/AlignmentCSVExporter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MsdialWorkbench/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MsdialWorkbench/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MsdialWorkbench/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MsdialWorkbench/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MSDIAL4/MsDial/Vesrion update/VersionUpdateNotificationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL4/MsDial/Vesrion update/VersionUpdateNotificationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MSDIAL5/MsdialCore/Algorithm/Alignment/PeakAligner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL5/MsdialCore/Algorithm/Alignment/PeakAligner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/Model/Notification/VersionUpdateNotificationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/Model/Notification/VersionUpdateNotificationService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/MsdialGuiApp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/MsdialGuiApp.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/Properties/Resources.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/Properties/Resources.Designer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/Properties/Resources.resx" beforeDir="false" afterPath="$PROJECT_DIR$/src/MSDIAL5/MsdialGuiApp/Properties/Resources.resx" afterDir="false" />
@@ -604,6 +602,10 @@
       <workItem from="1728010618236" duration="6434000" />
       <workItem from="1728034373802" duration="4281000" />
       <workItem from="1728275979875" duration="96000" />
+      <workItem from="1729572378064" duration="2291000" />
+      <workItem from="1729576305207" duration="113000" />
+      <workItem from="1729576572882" duration="332000" />
+      <workItem from="1729584195195" duration="3504000" />
     </task>
     <task id="LOCAL-00001" summary="Fix csv Exportation">
       <option name="closed" value="true" />
@@ -633,7 +635,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Fix csv Exportation" />
     <option name="LAST_COMMIT_MESSAGE" value="Fix csv Exportation" />
