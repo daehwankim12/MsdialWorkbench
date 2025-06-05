@@ -64,36 +64,28 @@ namespace CompMs.MsdialCore.DataObj
 
         internal class AnnotatedMSDecResultFormatter : IMessagePackFormatter<AnnotatedMSDecResult>
         {
-            public AnnotatedMSDecResult Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize) {
-                var currentOffset = offset;
-                var contentSize = MessagePackBinary.ReadArrayHeader(bytes, currentOffset, out int readTmp);
-                currentOffset += readTmp;
-                var raw = formatterResolver.GetFormatterWithVerify<byte[]>().Deserialize(bytes, currentOffset, formatterResolver, out readTmp);
-                currentOffset += readTmp;
-                var memory = new MemoryStream(raw, 0, raw.Length, writable: false);
+            public AnnotatedMSDecResult Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options) {
+                var count = reader.ReadArrayHeader();
+                if (count != 4) throw new MessagePackSerializationException("Invalid AnnotatedMSDecResult array header");
+                var raw = options.Resolver.GetFormatterWithVerify<byte[]>().Deserialize(ref reader, options);
+                using var memory = new MemoryStream(raw, writable: false);
                 var mSDecResult = MsdecResultsReader.ReadMSDecResultVer1(memory, isAnnotationInfoIncluded: false);
-                var matchResults = formatterResolver.GetFormatterWithVerify<MsScanMatchResultContainer>().Deserialize(bytes, currentOffset, formatterResolver, out readTmp);
-                currentOffset += readTmp;
-                var molecule = MoleculePropertyExtension.Formatter.Deserialize(bytes, currentOffset, formatterResolver, out readTmp);
-                currentOffset += readTmp;
-                var quantMass = formatterResolver.GetFormatterWithVerify<double>().Deserialize(bytes, currentOffset, formatterResolver, out readTmp);
-                currentOffset += readTmp;
-                readSize = currentOffset - offset;
+                var matchResults = options.Resolver.GetFormatterWithVerify<MsScanMatchResultContainer>().Deserialize(ref reader, options);
+                var molecule = MoleculePropertyExtension.Formatter.Deserialize(ref reader, options);
+                var quantMass = options.Resolver.GetFormatterWithVerify<double>().Deserialize(ref reader, options);
                 return new AnnotatedMSDecResult(mSDecResult, matchResults, molecule, quantMass);
             }
 
-            public int Serialize(ref byte[] bytes, int offset, AnnotatedMSDecResult value, IFormatterResolver formatterResolver) {
-                var currentOffset = offset;
-                currentOffset += MessagePackBinary.WriteArrayHeader(ref bytes, currentOffset, 4);
-                var memory = new MemoryStream();
+            public void Serialize(ref MessagePackWriter writer, AnnotatedMSDecResult value, MessagePackSerializerOptions options) {
+                writer.WriteArrayHeader(4);
+                using var memory = new MemoryStream();
                 MsdecResultsWriter.MSDecWriterVer1(memory, value.MSDecResult);
                 memory.Close();
                 var buffer = memory.ToArray();
-                currentOffset += formatterResolver.GetFormatterWithVerify<byte[]>().Serialize(ref bytes, currentOffset, buffer, formatterResolver);
-                currentOffset += formatterResolver.GetFormatterWithVerify<MsScanMatchResultContainer>().Serialize(ref bytes, currentOffset, value.MatchResults, formatterResolver);
-                currentOffset += MoleculePropertyExtension.Formatter.Serialize(ref bytes, currentOffset, value.Molecule, formatterResolver);
-                currentOffset += formatterResolver.GetFormatterWithVerify<double>().Serialize(ref bytes, currentOffset, value.QuantMass, formatterResolver);
-                return currentOffset - offset;
+                options.Resolver.GetFormatterWithVerify<byte[]>().Serialize(ref writer, buffer, options);
+                options.Resolver.GetFormatterWithVerify<MsScanMatchResultContainer>().Serialize(ref writer, value.MatchResults, options);
+                MoleculePropertyExtension.Formatter.Serialize(ref writer, value.Molecule, options);
+                options.Resolver.GetFormatterWithVerify<double>().Serialize(ref writer, value.QuantMass, options);
             }
         }
     }
