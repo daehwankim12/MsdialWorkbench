@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagePack; // Added
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Rfx.Riken.OsakaUniv
     /// This class is used in MS-DIAL though. MS-Finder program is useing new version.
     /// </summary>
     [Serializable()]
+    [MessagePackObject] // Added
     public class ElementPropertyBean
     {
         private int iupacID;
@@ -27,30 +29,35 @@ namespace Rfx.Riken.OsakaUniv
             isotopeElementPropertyBeanList = new List<IsotopeElementPropertyBean>();
         }
 
+        [Key(0)] // Added
         public int IupacID
         {
             get { return iupacID; }
             set { iupacID = value; }
         }
 
+        [Key(1)] // Added
         public string ElementName
         {
             get { return elementName; }
             set { elementName = value; }
         }
 
+        [Key(2)] // Added
         public int ElementNumber
         {
             get { return elementNumber; }
             set { elementNumber = value; }
         }
 
+        [Key(3)] // Added
         public List<IupacElementPropertyBean> IupacElementPropertyBeanList
         {
             get { return iupacElementPropertyBeanList; }
             set { iupacElementPropertyBeanList = value; }
         }
 
+        [Key(4)] // Added
         public List<IsotopeElementPropertyBean> IsotopeElementPropertyBeanList
         {
             get { return isotopeElementPropertyBeanList; }

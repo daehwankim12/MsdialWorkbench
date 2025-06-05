@@ -1,8 +1,10 @@
-﻿using System;
+﻿using MessagePack; // Added
+using System;
 using System.Collections.Generic;
 
 namespace CompMs.Common.Lipidomics
 {
+    [Union(0, typeof(DoubleBondInfo))] // Added
     public interface IDoubleBondInfo : IEquatable<IDoubleBondInfo>
     {
         int Position { get; }
@@ -25,20 +27,25 @@ namespace CompMs.Common.Lipidomics
             DoubleBondInfo info;
             lock (LOCKOBJ) {
                 if (!CACHE.TryGetValue((position, state), out info)) {
+                    // The constructor is now public for MessagePack, but factory logic remains for application code.
                     return CACHE[(position, state)] = new DoubleBondInfo(position, state);
                 }
             }
             return info;
         }
 
-        private DoubleBondInfo(int position, DoubleBondState state) {
+        [SerializationConstructor] // Added
+        public DoubleBondInfo(int position, DoubleBondState state) { // Made public
             Position = position;
             State = state;
         }
 
+        [Key(0)] // Added
         public int Position { get; }
+        [Key(1)] // Added
         public DoubleBondState State { get; }
 
+        [IgnoreMember] // Added
         public bool Determined => State != DoubleBondState.Unknown;
 
         public static DoubleBondInfo E(int position) => Create(position, DoubleBondState.E);

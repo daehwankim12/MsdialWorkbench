@@ -128,10 +128,70 @@ namespace CompMs.MsdialCore.DataObj
         public IonMode IonMode { get; set; }
         [IgnoreMember]
         public ChromXs ChromXs { get => PeakFeature.ChromXsTop; set => PeakFeature.ChromXsTop = value; } // same as ChromXsTop
-        [Key(24)]
-        public List<SpectrumPeak> Spectrum { get; set; } = new List<SpectrumPeak>();
+        [Key(24)] // This is what MessagePack will serialize/deserialize
+        public List<SpectrumPeak> SerializedSpectrum { get; set; } = null; // Initialize to null
+
+        private bool _spectrumProviderLoadAttempted = false;
+        private List<SpectrumPeak> _runtimeLoadedSpectrum = null;
+
+        [IgnoreMember]
+        public List<SpectrumPeak> Spectrum {
+            get {
+                // Priority 1: Return spectrum if it was deserialized and has data.
+                if (SerializedSpectrum != null && SerializedSpectrum.Any()) {
+                    return SerializedSpectrum;
+                }
+
+                // Priority 2: Return spectrum if it was loaded at runtime (e.g., by a future on-demand mechanism or explicit call).
+                if (_spectrumProviderLoadAttempted) {
+                    return _runtimeLoadedSpectrum ?? (_runtimeLoadedSpectrum = new List<SpectrumPeak>());
+                }
+
+                // --- Placeholder for actual on-demand loading from IDataProvider ---
+                // For this minimal pass, actual loading from IDataProvider is deferred.
+                // If we reach here, it means SerializedSpectrum is null/empty, and no runtime load was attempted/successful.
+                // We'll mark that an attempt was made, so we don't try again unless state is reset.
+                _spectrumProviderLoadAttempted = true;
+                // _runtimeLoadedSpectrum would be populated here by IDataProvider if implemented.
+                // For now, it remains null, so the line below returns a new empty list.
+                return _runtimeLoadedSpectrum ?? (_runtimeLoadedSpectrum = new List<SpectrumPeak>());
+            }
+            set {
+                // When Spectrum is explicitly set in code, assume it's for serialization or specific caching.
+                SerializedSpectrum = value;
+                // Reset runtime load flags as SerializedSpectrum now takes precedence or is the new source.
+                _runtimeLoadedSpectrum = null;
+                _spectrumProviderLoadAttempted = (SerializedSpectrum != null && SerializedSpectrum.Any());
+            }
+        }
+
         public void AddPeak(double mass, double intensity, string comment = null) {
-            Spectrum.Add(new SpectrumPeak(mass, intensity, comment));
+            var spectrumList = this.Spectrum; // Access property to ensure initialization
+            spectrumList.Add(new SpectrumPeak(mass, intensity, comment));
+        }
+
+        // Call this method if external code wants to clear a spectrum that was potentially loaded at runtime,
+        // allowing the getter to re-evaluate or fall back to SerializedSpectrum or re-load.
+        public void ClearRuntimeLoadedSpectrum() {
+            _runtimeLoadedSpectrum = null;
+            _spectrumProviderLoadAttempted = false;
+        }
+
+        public void PrepareForSerialization() {
+            // If the spectrum is linked to an MSDecResult, it's saved separately with MSDecResultCollection.
+            // Thus, to save space in the feature list file and avoid redundancy,
+            // clear the SerializedSpectrum before saving the feature itself.
+            // It can be re-linked or re-loaded on demand if needed later.
+            if (MSDecResultIdUsed >= 0) {
+                SerializedSpectrum = null;
+                // We don't reset _runtimeLoadedSpectrum or _spectrumProviderLoadAttempted here,
+                // as this method is purely about the state *for serialization*.
+                // The runtime state should persist until explicitly cleared or reloaded.
+            }
+            // Future enhancement: Could add more conditions here, e.g.,
+            // if _runtimeLoadedSpectrum contains a raw MS1/MS2 spectrum that was loaded
+            // on-demand for viewing and isn't essential to serialize with the feature.
+            // For now, only clearing if it's explicitly linked to an MSDecResult.
         }
 
         // set for IMoleculeProperty (for representative)

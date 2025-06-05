@@ -5,17 +5,19 @@ using System.Text;
 using MessagePack;
 
 namespace CompMs.Common.DataObj.Property {
+    [MessagePackObject] // Added
     public class IsotopeProperty {
 
         public IsotopeProperty() {
         }
 
+        [Key(0)] // Added
         public Formula Formula { get; set; } = new Formula();
-
+        [Key(1)] // Added
         public double ExactMass { get; set; }
-
+        [Key(2)] // Added
         public List<AtomProperty> ElementProfile { get; set; } = new List<AtomProperty>();
-
+        [Key(3)] // Added
         public List<IsotopicPeak> IsotopeProfile { get; set; } = new List<IsotopicPeak>();
     }
 
@@ -55,18 +57,20 @@ namespace CompMs.Common.DataObj.Property {
     /// This is the storage of the properties for natural isotope ratio calculation.
     /// This element is prepared for each chemical element such as C, H, N, O, S included in internal IUPAC queries.
     /// </summary>
+    [MessagePackObject] // Added
     public class AtomProperty {
         
         public AtomProperty() { }
 
+        [Key(0)] // Added
         public int IupacID { get; set; }
-
+        [Key(1)] // Added
         public string ElementName { get; set; }
-
+        [Key(2)] // Added
         public int ElementNumber { get; set; }
-
+        [Key(3)] // Added
         public List<AtomElementProperty> AtomElementProperties { get; set; } = new List<AtomElementProperty>();
-
+        [Key(4)] // Added
         public List<IsotopicPeak> IsotopicPeaks { get; set; } = new List<IsotopicPeak>();
 
     }

@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using MessagePack.Resolvers; // Added
 using Rfx.Riken.OsakaUniv;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,14 @@ using System.Runtime.Serialization;
 
 namespace CompMs.Common.MessagePack {
     public static class MessagePackDefaultHandler {
+        // It's common to use StandardResolverAllowPrivate if your classes might have [Key] attributes on private members.
+        // Or StandardResolver.Instance if only public members are involved.
+        // Using Lz4BlockArray as a general good compression for collections.
+        private static readonly MessagePackSerializerOptions DefaultLz4Options =
+            MessagePackSerializerOptions.Standard
+                .WithResolver(StandardResolverAllowPrivate.Instance)
+                .WithCompression(MessagePackCompression.Lz4BlockArray);
+
         public static T LoadFromFile<T>(string path) {
             T res;
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read)) {
@@ -15,7 +24,7 @@ namespace CompMs.Common.MessagePack {
             return res;
         }
         public static T LoadFromStream<T>(Stream s) {
-            return LZ4MessagePackSerializer.Deserialize<T>(s);
+            return MessagePackSerializer.Deserialize<T>(s, DefaultLz4Options);
         }
 
         public static void SaveToFile<T>(T obj, string path) {
@@ -24,7 +33,7 @@ namespace CompMs.Common.MessagePack {
             }
         }
         public static void SaveToStream<T>(T obj, Stream s) {
-            LZ4MessagePackSerializer.Serialize(s, obj);
+            MessagePackSerializer.Serialize<T>(s, obj, DefaultLz4Options);
         }
 
         // large list

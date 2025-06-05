@@ -1,11 +1,14 @@
 ﻿using CompMs.Common.DataStructure;
 using CompMs.Common.FormulaGenerator.DataObj;
+using MessagePack; // Added
 using System;
 using System.Collections.Generic;
 
 namespace CompMs.Common.Lipidomics
 {
+    [MessagePackObject] // Added
     public class TotalChain : ITotalChain {
+        [SerializationConstructor] // Added
         public TotalChain(int carbonCount, int doubleBondCount, int oxidizedCount, int acylChainCount, int alkylChainCount, int sphingoChainCount) {
             CarbonCount = carbonCount;
             DoubleBondCount = doubleBondCount;
@@ -13,19 +16,28 @@ namespace CompMs.Common.Lipidomics
             AcylChainCount = acylChainCount;
             AlkylChainCount = alkylChainCount;
             SphingoChainCount = sphingoChainCount;
-            Description = LipidDescription.Class;
+            Description = LipidDescription.Class; // Calculated/Fixed
         }
 
+        [Key(0)] // Added
         public int CarbonCount { get; }
+        [Key(1)] // Added
         public int DoubleBondCount { get; }
+        [Key(2)] // Added
         public int OxidizedCount { get; }
+        [IgnoreMember] // Added
         public int ChainCount => AcylChainCount + AlkylChainCount + SphingoChainCount;
+        [Key(3)] // Added
         public int AcylChainCount { get; }
+        [Key(4)] // Added
         public int AlkylChainCount { get; }
+        [Key(5)] // Added
         public int SphingoChainCount { get; }
 
+        [IgnoreMember] // Added (Fixed value set in constructor)
         public LipidDescription Description { get; }
 
+        [IgnoreMember] // Added (Calculated)
         public double Mass => CalculateSubLevelMass(CarbonCount, DoubleBondCount, OxidizedCount, ChainCount, AcylChainCount, AlkylChainCount, SphingoChainCount);
 
         private static double CalculateSubLevelMass(int carbon, int doubleBond, int oxidize, int chain, int acyl, int alkyl, int sphingo) {

@@ -10,6 +10,10 @@ namespace CompMs.MsdialCore.Parser
     public static class MsdialPeakSerializer
     {
         public static void SaveChromatogramPeakFeatures(string file, List<ChromatogramPeakFeature> chromPeakFeatures) {
+            // New: Call PrepareForSerialization on each feature
+            foreach (var peak in chromPeakFeatures) {
+                peak.PrepareForSerialization();
+            }
             MessagePackHandler.SaveToFile<List<ChromatogramPeakFeature>>(chromPeakFeatures, file);
             var tagfile = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + "_tags.xml");
             var defsElement = new XElement("Definitions");

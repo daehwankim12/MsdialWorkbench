@@ -1,10 +1,14 @@
 ﻿using CompMs.Common.DataStructure;
+using MessagePack; // Added
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CompMs.Common.Lipidomics
 {
+    [Union(0, typeof(TotalChain))] // Added
+    [Union(1, typeof(MolecularSpeciesLevelChains))] // Added
+    [Union(2, typeof(PositionLevelChains))] // Added
     public interface ITotalChain : IEquatable<ITotalChain>, IVisitableElement
     {
         int CarbonCount { get; }

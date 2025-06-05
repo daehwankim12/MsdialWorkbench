@@ -1,15 +1,27 @@
 ﻿using CompMs.Common.DataStructure;
+using MessagePack; // Added
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CompMs.Common.Lipidomics
 {
+    [MessagePackObject] // Added
     public class MolecularSpeciesLevelChains : SeparatedChains, ITotalChain
     {
         private static readonly ChainComparer CHAIN_COMPARER = new ChainComparer();
 
+        // Existing constructor for application logic
         public MolecularSpeciesLevelChains(params IChain[] chains) : base(chains.OrderBy(c => c, CHAIN_COMPARER).ToArray(), LipidDescription.Class | LipidDescription.Chain) {
 
+        }
+
+        // Constructor for MessagePack deserialization
+        // It needs to match the parameters of the base class's [SerializationConstructor]
+        // if there are no additional fields in this class to deserialize.
+        // The base constructor is: SeparatedChains(ChainInformation[] innerChains, LipidDescription description)
+        [SerializationConstructor] // Added
+        public MolecularSpeciesLevelChains(ChainInformation[] innerChains, LipidDescription description) : base(innerChains, description) {
+            // Any additional initialization specific to MolecularSpeciesLevelChains if necessary
         }
 
         IChain ITotalChain.GetChainByPosition(int position) {

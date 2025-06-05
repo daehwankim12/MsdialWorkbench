@@ -1,4 +1,5 @@
 ﻿using CompMs.Common.DataStructure;
+using MessagePack; // Added
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Linq;
 
 namespace CompMs.Common.Lipidomics
 {
+    [Union(0, typeof(Oxidized))] // Added
     public interface IOxidized : IVisitableElement, IEquatable<IOxidized>
     {
         int Count { get; }
@@ -17,24 +19,30 @@ namespace CompMs.Common.Lipidomics
         bool Includes(IOxidized oxidized);
     }
 
+    [MessagePackObject] // Added
     public sealed class Oxidized : IOxidized
     {
+        [SerializationConstructor] // Added
         public Oxidized(int count, IList<int> oxidises) {
             Count = count;
-            Oxidises = new ReadOnlyCollection<int>(oxidises);
+            Oxidises = new ReadOnlyCollection<int>(oxidises ?? new List<int>()); // Ensure oxidises is not null
         }
 
-        public Oxidized(int count, params int[] oxidises) {
-            Count = count;
-            Oxidises = new ReadOnlyCollection<int>(oxidises);
+        // This constructor can remain for application logic, MP will use the attributed one.
+        public Oxidized(int count, params int[] oxidises) : this(count, (IList<int>)oxidises) {
+            // Count = count;
+            // Oxidises = new ReadOnlyCollection<int>(oxidises);
         }
 
+        [Key(0)] // Added
         public int Count { get; }
 
+        [IgnoreMember] // Added
         public int DecidedCount => Oxidises.Count;
-
+        [IgnoreMember] // Added
         public int UnDecidedCount => Count - DecidedCount;
 
+        [Key(1)] // Added
         public ReadOnlyCollection<int> Oxidises { get; }
 
         public override string ToString() {

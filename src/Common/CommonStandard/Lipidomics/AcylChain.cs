@@ -1,29 +1,34 @@
 ﻿using CompMs.Common.DataStructure;
 using CompMs.Common.FormulaGenerator.DataObj;
+using MessagePack; // Added
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CompMs.Common.Lipidomics
 {
+    [MessagePackObject] // Added
     public class AcylChain : IChain
     {
+        [SerializationConstructor] // Added
         public AcylChain(int carbonCount, IDoubleBond doubleBond, IOxidized oxidized) {
             CarbonCount = carbonCount;
             DoubleBond = doubleBond ?? throw new ArgumentNullException(nameof(doubleBond));
             Oxidized = oxidized ?? throw new ArgumentNullException(nameof(oxidized));
         }
 
+        [Key(1)] // Added
         public IDoubleBond DoubleBond { get; }
-
+        [Key(2)] // Added
         public IOxidized Oxidized { get; }
-
+        [Key(0)] // Added
         public int CarbonCount { get; }
 
+        [IgnoreMember] // Added
         public int DoubleBondCount => DoubleBond.Count;
-
+        [IgnoreMember] // Added
         public int OxidizedCount => Oxidized.Count;
-
+        [IgnoreMember] // Added
         public double Mass => CalculateAcylMass(CarbonCount, DoubleBondCount, OxidizedCount);
 
         public IEnumerable<IChain> GetCandidates(IChainGenerator generator) {
@@ -74,23 +79,27 @@ namespace CompMs.Common.Lipidomics
         }
     }
 
+    [MessagePackObject] // Added
     public class AlkylChain : IChain
     {
+        [SerializationConstructor] // Added
         public AlkylChain(int carbonCount, IDoubleBond doubleBond, IOxidized oxidized) {
             CarbonCount = carbonCount;
             DoubleBond = doubleBond ?? throw new ArgumentNullException(nameof(doubleBond));
             Oxidized = oxidized ?? throw new ArgumentNullException(nameof(oxidized));
         }
+        [Key(1)] // Added
         public IDoubleBond DoubleBond { get; }
-
+        [Key(2)] // Added
         public IOxidized Oxidized { get; }
-
+        [Key(0)] // Added
         public int CarbonCount { get; }
 
+        [IgnoreMember] // Added
         public int DoubleBondCount => DoubleBond.Count;
-
+        [IgnoreMember] // Added
         public int OxidizedCount => Oxidized.Count;
-
+        [IgnoreMember] // Added
         public double Mass => CalculateAlkylMass(CarbonCount, DoubleBondCount, OxidizedCount);
 
         static double CalculateAlkylMass(int carbon, int doubleBond, int oxidize) {
@@ -110,6 +119,7 @@ namespace CompMs.Common.Lipidomics
             }
         }
 
+        [IgnoreMember] // Added
         public bool IsPlasmalogen => DoubleBond.Bonds.Any(b => b.Position == 1);
 
         private static string FormatDoubleBond(IDoubleBond doubleBond) {
@@ -157,8 +167,10 @@ namespace CompMs.Common.Lipidomics
         }
     }
 
+    [MessagePackObject] // Added
     public class SphingoChain : IChain
     {
+        [SerializationConstructor] // Added
         public SphingoChain(int carbonCount, IDoubleBond doubleBond, IOxidized oxidized) {
             if (oxidized is null) {
                 throw new ArgumentNullException(nameof(oxidized));
@@ -175,16 +187,18 @@ namespace CompMs.Common.Lipidomics
             Oxidized = oxidized;
         }
 
+        [Key(0)] // Added
         public int CarbonCount { get; }
-
+        [Key(1)] // Added
         public IDoubleBond DoubleBond { get; }
-
+        [Key(2)] // Added
         public IOxidized Oxidized { get; }
 
+        [IgnoreMember] // Added
         public int DoubleBondCount => DoubleBond.Count;
-
+        [IgnoreMember] // Added
         public int OxidizedCount => Oxidized.Count;
-
+        [IgnoreMember] // Added
         public double Mass => CalculateSphingosineMass(CarbonCount, DoubleBondCount, OxidizedCount);
 
         static double CalculateSphingosineMass(int carbon, int doubleBond, int oxidize) {

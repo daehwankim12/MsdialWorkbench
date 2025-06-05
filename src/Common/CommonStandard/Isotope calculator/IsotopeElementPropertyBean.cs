@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagePack; // Added
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,24 +14,28 @@ namespace Rfx.Riken.OsakaUniv
     /// This class is used in MS-DIAL though. MS-Finder program is useing new version.
     /// </summary>
     [Serializable()]
+    [MessagePackObject] // Added
     public class IsotopeElementPropertyBean
     {
         private double relativeAbundance;
         private double massDifferenceFromMonoisotopicIon;
         private string comment;
 
+        [Key(0)] // Added
         public double RelativeAbundance
         {
             get { return relativeAbundance; }
             set { relativeAbundance = value; }
         }
 
+        [Key(1)] // Added
         public double MassDifferenceFromMonoisotopicIon
         {
             get { return massDifferenceFromMonoisotopicIon; }
             set { massDifferenceFromMonoisotopicIon = value; }
         }
 
+        [Key(2)] // Added
         public string Comment
         {
             get { return comment; }

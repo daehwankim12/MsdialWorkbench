@@ -1,4 +1,5 @@
 ﻿using CompMs.Common.DataStructure;
+using MessagePack; // Added
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Linq;
 
 namespace CompMs.Common.Lipidomics
 {
+    [Union(0, typeof(DoubleBond))] // Added
     public interface IDoubleBond : IVisitableElement, IEquatable<IDoubleBond>
     {
         int Count { get; }
@@ -21,13 +23,16 @@ namespace CompMs.Common.Lipidomics
         IDoubleBond Indeterminate(DoubleBondIndeterminateState indeterminateState);
     }
 
+    [MessagePackObject] // Added
     public sealed class DoubleBond : IDoubleBond
     {
+        [SerializationConstructor] // Added
         public DoubleBond(int count, IList<IDoubleBondInfo> bonds) {
             Count = count;
-            Bonds = new ReadOnlyCollection<IDoubleBondInfo>(bonds);
+            Bonds = new ReadOnlyCollection<IDoubleBondInfo>(bonds ?? new List<IDoubleBondInfo>()); // Ensure bonds is not null for ReadOnlyCollection
         }
 
+        // Other constructors can remain for application logic
         public DoubleBond(int count, IEnumerable<IDoubleBondInfo> bonds) : this(count, (bonds as IList<IDoubleBondInfo>) ?? bonds.ToArray()) {
 
         }
@@ -40,12 +45,15 @@ namespace CompMs.Common.Lipidomics
 
         }
 
+        [Key(0)] // Added
         public int Count { get; }
 
+        [IgnoreMember] // Added
         public int DecidedCount => Bonds.Count;
-
+        [IgnoreMember] // Added
         public int UnDecidedCount => Count - DecidedCount;
 
+        [Key(1)] // Added
         public ReadOnlyCollection<IDoubleBondInfo> Bonds { get; }
 
         public IDoubleBond Add(params IDoubleBondInfo[] infos) {

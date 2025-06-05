@@ -1,6 +1,7 @@
 ﻿using CompMs.Common.DataObj.Property;
 using CompMs.Common.DataStructure;
 using CompMs.Common.Enum;
+using MessagePack; // Added
 using CompMs.Common.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace CompMs.Common.Lipidomics
         public static bool Has(this LipidDescription description, LipidDescription other) => (description & other) != LipidDescription.None;
     }
 
+    [Union(0, typeof(Lipid))] // Added
     public interface ILipid : IEquatable<ILipid>, IVisitableElement
     {
         string Name { get; }
@@ -30,22 +32,31 @@ namespace CompMs.Common.Lipidomics
         IMSScanProperty GenerateSpectrum(ILipidSpectrumGenerator generator, AdductIon adduct, IMoleculeProperty molecule = null); 
     }
 
+    [MessagePackObject] // Added
     public class Lipid : ILipid {
+        [SerializationConstructor] // Added
         public Lipid(LbmClass lipidClass, double mass, ITotalChain chains) {
             LipidClass = lipidClass;
             Mass = mass;
-            AnnotationLevel = GetAnnotationLevel(chains);
+            AnnotationLevel = GetAnnotationLevel(chains); // Calculated
             Chains = chains ?? throw new System.ArgumentNullException(nameof(chains));
-            Description = chains.Description;
+            Description = chains.Description; // Calculated
         }
 
+        [IgnoreMember] // Added : Calculated from ToString()
         public string Name => ToString();
+        [Key(0)] // Added
         public LbmClass LipidClass { get; }
+        [Key(1)] // Added
         public double Mass { get; }
+        [IgnoreMember] // Added : Calculated in constructor
         public int AnnotationLevel { get; } = 1;
+        [IgnoreMember] // Added : Calculated in constructor
         public LipidDescription Description { get; } = LipidDescription.None;
 
+        [IgnoreMember] // Added : Calculated from Chains
         public int ChainCount => Chains.CarbonCount;
+        [Key(2)] // Added
         public ITotalChain Chains { get; }
 
         public bool Includes(ILipid lipid) {
