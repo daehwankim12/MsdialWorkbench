@@ -130,7 +130,7 @@ namespace CompMs.MsdialCore.DataObj
         public ChromXs ChromXs { get => PeakFeature.ChromXsTop; set => PeakFeature.ChromXsTop = value; } // same as ChromXsTop
         // Spectrum data for serialization. Use the Spectrum property to access at runtime.
         [Key(24)]
-        public List<SpectrumPeak> SerializedSpectrum { get; set; } = null;
+        public List<SpectrumPeak> Spectrum { get; set; } = new List<SpectrumPeak>();
 
         private List<SpectrumPeak> _runtimeLoadedSpectrum;
         private bool _spectrumProviderLoadAttempted = false;
