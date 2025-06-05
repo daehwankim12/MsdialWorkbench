@@ -24,7 +24,7 @@ namespace CompMs.MsdialCore.Algorithm.Internal;
 /// that spectra data is cached the first time it is requested through this provider.
 /// </para>
 /// </remarks>
-internal sealed class CachedDataProvider: IDataProvider
+internal sealed class CachedDataProvider : IDataProvider, IDisposable
 {
     private readonly IDataProvider _provider;
 
@@ -111,4 +111,14 @@ internal sealed class CachedDataProvider: IDataProvider
     private async Task<ReadOnlyCollection<RawSpectrum>> LoadMsSpectrumsAsyncCore(CancellationToken token) {
         return _msSpectraCache = await _provider.LoadMsSpectrumsAsync(token).ConfigureAwait(false);
     }
+    public void Dispose() {
+        _ms1SpectraCache = null;
+        _ms2SpectraCache = null;
+        _msSpectraCache = null;
+        _msnSpectraCaches.Clear();
+        if (_provider is IDisposable disposable) {
+            disposable.Dispose();
+        }
+    }
+
 }

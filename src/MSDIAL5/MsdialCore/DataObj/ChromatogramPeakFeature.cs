@@ -128,10 +128,50 @@ namespace CompMs.MsdialCore.DataObj
         public IonMode IonMode { get; set; }
         [IgnoreMember]
         public ChromXs ChromXs { get => PeakFeature.ChromXsTop; set => PeakFeature.ChromXsTop = value; } // same as ChromXsTop
+        // Spectrum data for serialization. Use the Spectrum property to access at runtime.
         [Key(24)]
-        public List<SpectrumPeak> Spectrum { get; set; } = new List<SpectrumPeak>();
+        public List<SpectrumPeak> SerializedSpectrum { get; set; } = null;
+
+        private List<SpectrumPeak> _runtimeLoadedSpectrum;
+        private bool _spectrumProviderLoadAttempted = false;
+
+        [IgnoreMember]
+        public List<SpectrumPeak> Spectrum {
+            get {
+                if (SerializedSpectrum != null && SerializedSpectrum.Count > 0) {
+                    return SerializedSpectrum;
+                }
+                if (!_spectrumProviderLoadAttempted) {
+                    _spectrumProviderLoadAttempted = true;
+                    // TODO: load spectrum from provider when available
+                }
+                return _runtimeLoadedSpectrum ??= new List<SpectrumPeak>();
+            }
+            set {
+                SerializedSpectrum = value;
+                _runtimeLoadedSpectrum = null;
+                _spectrumProviderLoadAttempted = false;
+            }
+        }
+
+        public void ClearRuntimeLoadedSpectrum() {
+            _runtimeLoadedSpectrum?.Clear();
+            _runtimeLoadedSpectrum = null;
+            _spectrumProviderLoadAttempted = false;
+        }
+
         public void AddPeak(double mass, double intensity, string comment = null) {
-            Spectrum.Add(new SpectrumPeak(mass, intensity, comment));
+            var spectrum = Spectrum;
+            spectrum.Add(new SpectrumPeak(mass, intensity, comment));
+            if (ReferenceEquals(spectrum, _runtimeLoadedSpectrum)) {
+                SerializedSpectrum = null;
+            }
+        }
+
+        public void PrepareForSerialization() {
+            if (MSDecResultIdUsed >= 0) {
+                SerializedSpectrum = null;
+            }
         }
 
         // set for IMoleculeProperty (for representative)

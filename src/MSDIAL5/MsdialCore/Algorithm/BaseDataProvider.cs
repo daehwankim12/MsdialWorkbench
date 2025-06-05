@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CompMs.MsdialCore.Algorithm
 {
-    public abstract class BaseDataProvider : IDataProvider
+    public abstract class BaseDataProvider : IDataProvider, IDisposable
     {
         private readonly Task<IList<RawSpectrum>> _spectraTask;
 
@@ -113,6 +113,12 @@ namespace CompMs.MsdialCore.Algorithm
                         : await _spectraTask.ConfigureAwait(false);
                     return spectra.Where(spectrum => spectrum.MsLevel == level).ToList().AsReadOnly();
                 })).Value;
+
+        public virtual void Dispose() {
+            cache.Clear();
+            if (_spectraTask.IsCompleted) {
+                _spectraTask.Result.Clear();
+            }
         }
     }
 }

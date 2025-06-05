@@ -124,7 +124,14 @@ public class PeakAligner {
         ChromatogramSerializer<ChromatogramPeakInfo> serializer = null) {
 
         var provider = ProviderFactory?.Create(analysisFile);
-        IReadOnlyList<RawSpectrum> spectra = provider?.LoadMs1Spectrums();
+        IReadOnlyList<RawSpectrum> spectra = null;
+        try {
+            spectra = provider?.LoadMs1Spectrums();
+        } finally {
+            if (provider is IDisposable disposable) {
+                disposable.Dispose();
+            }
+        }
         if (spectra == null) {
             using (var rawDataAccess = new RawDataAccess(analysisFile.AnalysisFilePath, 0, false, false, true, analysisFile.RetentionTimeCorrectionBean.PredictedRt)) {
                 spectra = rawDataAccess.GetMeasurement()?.SpectrumList;

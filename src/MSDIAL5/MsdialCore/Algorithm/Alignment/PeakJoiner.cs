@@ -57,6 +57,7 @@ namespace CompMs.MsdialCore.Algorithm.Alignment
             foreach (var analysisFile in analysisFiles) {
                 var chromatogram = accessor.GetMSScanProperties(analysisFile);
                 AlignPeaksToMaster(result, master, chromatogram, analysisFile.AnalysisFileId);
+                chromatogram.Clear();
             }
             
             return result;
@@ -68,11 +69,15 @@ namespace CompMs.MsdialCore.Algorithm.Alignment
             if (referenceFile == null) return new List<IMSScanProperty>();
 
             var master = new List<IMSScanProperty>();
-            master = MergeChromatogramPeaks(master, accessor.GetMSScanProperties(referenceFile));
+            var chromatogram = accessor.GetMSScanProperties(referenceFile);
+            master = MergeChromatogramPeaks(master, chromatogram);
+            chromatogram.Clear();
             foreach (var analysisFile in analysisFiles) {
                 if (analysisFile.AnalysisFileId == referenceFile.AnalysisFileId)
                     continue;
-                master = MergeChromatogramPeaks(master, accessor.GetMSScanProperties(analysisFile));
+                chromatogram = accessor.GetMSScanProperties(analysisFile);
+                master = MergeChromatogramPeaks(master, chromatogram);
+                chromatogram.Clear();
             }
 
             return master;
