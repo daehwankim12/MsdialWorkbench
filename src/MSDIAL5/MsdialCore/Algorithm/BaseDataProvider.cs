@@ -116,7 +116,7 @@ namespace CompMs.MsdialCore.Algorithm
 
         public virtual void Dispose() {
             cache.Clear();
-            if (_spectraTask.IsCompleted) {
+            if (_spectraTask.IsCompleted && _spectraTask.Result != null) {
                 _spectraTask.Result.Clear();
             }
         }
